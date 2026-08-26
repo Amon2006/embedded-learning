@@ -1,2 +1,3 @@
-# embedded-learning
-嵌入式学习仓库：STM32 + FreeRTOS
+# 嵌入式学习仓库
+
+2026-08-26 建立。目标：STM32 + FreeRTOS + 项目开发。
