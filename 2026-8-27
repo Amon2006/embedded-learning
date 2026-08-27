@@ -2,3 +2,9 @@
 1、STM32 Cube IDE的入门使用
 2、STM32点灯
 3、STM32 LED灯闪烁及状态机代码的编写与使用
+4、HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin)--读取对应引脚电平值，返回高电平SET，低电平RESRT
+5、HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);翻转对应引脚电平值
+6、HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, SET);设置对应引脚电平值
+7、引脚模式GPIO_input--读电平模式：No pull up and no pull down--浮空模式，由外加上拉电阻控制电平值;pull-up:由芯片内部上拉电阻控制电平值
+8、引脚模式GPIO_output--输出电平：low:低电平;high:高电平
+9、按键要注意消抖
