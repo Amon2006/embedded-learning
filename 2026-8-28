@@ -1,0 +1,5 @@
+今日学习内容：中断
+按键中断（如key1）：将PB12设置为GPIO_EXTI12（12号中断线），并将GPIO mode设置为下降沿触发中断（根据具体情况设置）
+在NVIC中开启中断向量EXTI15_10
+中断优先级问题：HAL_Delay函数依赖System tick timer（系统滴答中断）执行优先级低于EXIT中断，故无法在中断处理函数中执行
+若要执行则需在NVIC中将System tick timer的优先级数字改为小于EXTI15_10的优先级数字（数字越小优先级越高）

@@ -1,0 +1,24 @@
+今日学习内容：串口通信（TTL串口）轮询模式
+TTL串口使用发送IO口TX和接收IO口RX
+两台设备实现通信需要将TX与RX连接，有时还需要将地线相连以实现共地
+手动设置下载调试器接口：System Core——>SYS——>Debug——>serial wire
+串口配置:Connectivity——>USART2——>Mode——>Asynchronous(异步触发模式)
+串口发送函数HAL_UART_Transmit(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度，超时时间（最长等待时间）)
+接收数据函数HAL_UART_Receive(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度，超时时间（最长等待时间）)
+GPIO_PIN_State表示GPIO高低电平的变量类型
+
+
+中断模式
+打开方式：NVIC——>USART2 global interrupt
+中断模式发送函数HAL_UART_Transmit_IT(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度)
+中断模式接收函数HAL_UART_Receive_IT(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度)
+中断模式接收函数并不会堵塞等待数据接收完再进行下一步
+
+中断处理函数 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+将代码写入到HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)中就可以实现在串口接收数据完成的第一时刻对
+收到的数据进行分析处理
+在 main 函数中，使用 HAL_UART_Receive_IT 函数开启串口接收中断
+只需要开启一次，接收到数据后会自动进入中断函数
+在串口中断函数 HAL_UART_RxCpltCallback 中，处理接收到的数据，并控制LED
+所有的串口接收和发送操作都在中断函数中进行，不会阻塞主程序
+因此，while 循环中可以自由的处理其他任务
