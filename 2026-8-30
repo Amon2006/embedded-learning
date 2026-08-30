@@ -1,0 +1,31 @@
+今日学习内容：1、串口DMA模式
+打开方式：Connectivity——>USART2——>DMA Settings——>add
+发送函数 HAL_UART_Transmit_DMA(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度)
+接收函数 HAL_UART_Receive_DMA(串口指针，需要接收的信息的指针（uint8_t格式），接收内容的长度)
+
+串口接收不定长数据依靠串口空闲中断（只有当RX引脚上无后续数据进入即串口从忙碌转为空闲时才会触发）
+串口中断接收函数 HAL_UARTEx_ReceiveToIdle_DMA(串口指针，需要接收的信息的指针（uint8_t格式），一次能接收的最大数据长度)
+没有专门的串口中断发送函数，直接使用 HAL_UART_Transmit_DMA(串口指针，需要发送的信息的指针（uint8_t格式），发送内容的长度)即可
+使用 HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)中断接收函数前要先在int main中
+先触发一次中断接收函数 HAL_UARTEx_ReceiveToIdle_DMA
+
+串口中断接收函数 HAL_UARTEx_ReceiveToIdle_DMA在接收完整数据和接收到最大数据长度的一半时都会触发
+关闭串口DMA模式的接收中断可以通过 __HAL_DMA_DISABLE_IT(DMA通道指针地址（&hdma_usart2_rx），要关闭的中断（DMA传输过半中断DMA_IT_HT）)
+除了在函数中关闭传输过半中断外，程序int main开始时也要关闭一次
+
+
+
+2、蓝牙ble模式
+将与蓝牙模块连接的USART3开启为异步模式Asynchronous，波特率设置为9600，数据位8位，停止位1位；开启中断；添加DMA通道
+
+3、指令数据包
+格式：起始符（0xAA）+数据包长度（1字节），指示数据包一共多长+数据内容（N字节）+校验和（1字节）
+校验和计算方法：将数据包长度和数据内容的每个字节相加，然后取低8位作为校验和；
+例：0xAA 0x05 0x01 0x00 0xB0;
+
+4、代码写法
+首先验证数据第零位是否为起始符0xAA，如果不是则丢弃数据包，继续接收下一次数据包；
+然后验证数据包长度是否正确，如果不正确则丢弃数据包，继续接收下一次数据包；
+最后验证校验和是否正确，如果不正确则丢弃数据包，继续接收下一次数据包；
+根据数据内容逻辑控制设备
+  

@@ -8,3 +8,5 @@
 7、引脚模式GPIO_input--读电平模式：No pull up and no pull down--浮空模式，由外加上拉电阻控制电平值;pull-up:由芯片内部上拉电阻控制电平值
 8、引脚模式GPIO_output--输出电平：low:低电平;high:高电平
 9、按键要注意消抖
+
+10、PV——私有变量区域，在此处声明变量
