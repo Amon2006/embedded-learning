@@ -1,0 +1,36 @@
+今日学习内容：
+1、时钟树
+内核/内存/DMA的频率与HCLK相同 
+SysTick（系统滴答）用于控制HAL_Delay（）函数，有/1和/8（分频器）两种选项
+
+
+2、定时器
+定时器的本质就是计数器
+stm32的f10系列芯片中，最多有8个定时器可以使用，分别是TIM1-8，又根据强度分为3类
+TIM6、TIM7功能最弱，称为基本定时器，只有简单的定时功能
+TIM2、TIM3、TIM4、TIM5，称为通用定时器
+TIM1、TIM8，称为高级定时器
+
+Timers中可以选择定时器
+stm32f103c8t6芯片中只有TIM1-TIM4四个定时器
+选用TIM4，勾选Internal Clock（内部时钟）作为时钟源即可
+选用TIM2则是将Clock Source（时钟源）选择为Internal Clock（内部时钟 ）
+开启定时器后来到下方配置界面
+Prescaler————对预分频器的设置，假如要进行7200分频，则填入7199，这样72MHz的脉冲信号经过7200分频，就成为了10000Hz
+如果要定时1s就可以将Counter Period（计数周期）设置为9999（从0数到9999）
+
+3、代码书写
+定时器启动函数：HAL_TIM_Base_Start(&htim4（要启动的定时器的句柄的指针）)
+获取计数器值的宏定义：__HAL_TIM_GET_COUNTER(&htim4（要启动的定时器的句柄的指针）)
+设置计数器的值：__HAL_TIM_SET_COUNTER(&htim4（要启动的定时器的句柄的指针），值)
+获取重装载寄存器的值的宏定义：__HAL_TIM_GET_AUTORELOAD(&htim4（要启动的定时器的句柄的指针）)  
+设置重装载寄存器的值：__HAL_TIM_SET_AUTORELOAD(&htim4（要启动的定时器的句柄的指针），值)
+设置预分频器的值：__HAL_TIM_SET_PRESCALER(&htim4（要启动的定时器的句柄的指针），值)
+设置的新预分频值要等到下个计数周期才生效
+设置的重装载值也要等到下个计数周期才生效（重装载寄存器可以选择开启或关闭该功能）
+打开方式TIMx————Parameter———AutoReloadPreload———Enable（开启）/Disable（关闭）
+在没有打开时，若将重装载计时器的值调小，则会可能会出现计数器的值大于重装载寄存器的值的情况，导致计数器溢出直到数到最大值66535，才会重新从0开始计数
+
+4、更新中断
+每次计数器计到与重装载值相同将计数器清零重新开始时触发的中断
+中断回调函数 HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
