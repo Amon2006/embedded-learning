@@ -11,3 +11,5 @@ Encoder Mode编码器模式，Encoder Mode TI1————在通道1的边沿上
 
 代码书写：
 启动编码器 HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+
+旋转编码器旋转一周有20个脉冲，计数40次
